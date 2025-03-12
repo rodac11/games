@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+/* A proof of concept, meant to compile on my terminal and that's it.
+
+   TODO add functionality for MAC
+ */
+
+//TODO add a prompt Macro
+
+char x;
+
+void p1_start();
+void p2_start();
+
+char c;
+#define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
+#define PROMPT(c) {printf("Your choice: "); scanf(" %c", &c);}
+
+
+
+
+int main () {
+	while(1){
+		HEAD
+		printf("Choose your player: \n [1]-Rodrigo\n [2]-Ira\n\n");
+	        PROMPT(c)
+		if(c == '1') {
+			p1_start();
+			break;
+		}
+		if(c == '2') {
+			p2_start();
+			break;
+		}
+		else {
+			printf("\nYou have to choose 1 or 2.\n");
+			sleep(1);
+		}
+	}
+}
+
+void p1_start(){
+	HEAD
+	printf("You are Rodrigo. A hottie!\n");
+	printf("You are in your room in Tegucigalpa, just chilling."
+		"You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
+		"\n\nWhat do you want to do?\n\n");
+
+	while(1){
+		printf("[1]-Open your LAPTOP \t[2]-Check your NOTEBOOK [3]-Pet PANTERA\n\n");
+		PROMPT(c)
+}
+}
+
+void p2_start(){
+	HEAD
+	printf("You are Ira. A cutie!\n\n");
+	printf("You are in your room in Boston, just chilling."
+		"You have your LAPTOP, your PHONE, and a GUITAR."
+		"\n\nWhat do you want to do?\n\n");
+
+	while(1){
+		printf("[1]-Open your LAPTOP \t[2]-Check your PHONE \t[3]-Play the GUITAR\n\n");
+		PROMPT(c)
+	}
+}
