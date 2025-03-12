@@ -1,43 +1,84 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 /* A proof of concept, meant to compile on my terminal and that's it.
 
    TODO add functionality for MAC
  */
 
-//TODO add a prompt Macro
 
+//========VARIABLES=======
+
+
+#define COLLECTIBLE_NAME_LENGTH  20
+#define COLLECTIBLE_SET_NAME 10
+#define COLLECTIBLE_SET_SIZE 3
+#define PLAYER_NAME_SIZE 3
+#define PLAYER_NAMES "Rod" "Ira"
+
+//========STRUCTS=========
+
+struct collectible {
+  char name[COLLECTIBLE_NAME_LENGTH];
+  char set[COLLECTIBLE_SET_NAME];
+  bool got;
+};
+
+//struct collectible collectible_set[COLLECTIBLE_SET_SIZE];
+
+
+struct player {
+  int id;
+  char name[PLAYER_NAME_SIZE];
+  struct collectible special[COLLECTIBLE_SET_SIZE];
+  struct collectible inventory[COLLECTIBLE_SET_SIZE];
+};
+
+//========GLOBALS======
 char x;
+char c;
+struct player p;
+const char names[] = {"Rod", "Ira"};
+
+
+//=========MACROS==========
+#define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
+#define PROMPT(c) {printf("Your choice: "); scanf(" %c", &c);}
+
+//========PROTOTYPES=======
+
+//P1 methods
 
 void p1_start();
 void r_laptop();
 void notebook();
 void pet_cat();
 
+//P2 methods
 void p2_start();
 void i_laptop();
 void phone();
 void guitar();
 
-char c;
-#define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
-#define PROMPT(c) {printf("Your choice: "); scanf(" %c", &c);}
+//shared methods (is this a good idea?)
+void player_init(int pnum);
 
+//======METHODS=======
 
-
-
-int main () {
+ int main () {
 	while(c != 1 || c != 2){
 		HEAD
 		printf("Choose your player: \n [1]-Rodrigo\n [2]-Ira\n\n");
 	        PROMPT(c)
 		if(c == '1') {
+		  player_init(1);
 			p1_start();
 			break;
 		}
 		if(c == '2') {
+		  player_init(2);
 			p2_start();
 			break;
 		}
@@ -48,9 +89,26 @@ int main () {
 	}
 }
 
+void player_init(int pnum) {
+  p.id = pnum;
+  strcpy(p.name, names[pnum]);
+  
+    // loop through special
+    // give id 1-3
+    // loop through inventory;
+    // give id 1-3
+  }
+
+  if(pnum == 2){
+    strcpy(p.name, "Ira");
+    //loop through special, inventory
+    
+  }
+}
+
 void p1_start(){
 	HEAD
-	printf("You are Rodrigo. A hottie!\n");
+	  printf("You are %s. A hottie!\n", p.name);
 	printf("You are in your room in Tegucigalpa, just chilling."
 		"You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
 		"\n\nWhat do you want to do?\n\n");
