@@ -118,8 +118,13 @@ void p1_start(){
 	HEAD
 	  printf("You are %s. A hottie!\n", p.name);
 	printf("You are in your room in Tegucigalpa, just chilling."
-		"You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
+		" You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
 		"\n\nWhat do you want to do?\n\n");
+
+	for(int i = 0; i < SPECIAL_SIZE; i++){
+	  printf("%d",i);
+	  printf("%s\n", p.special_inventory[i].set);
+	}
 
 	while(1){
 		printf("[1]-Open your LAPTOP \t[2]-Check your NOTEBOOK \t[3]-Pet PANTERA\n\n");
@@ -160,8 +165,13 @@ void p2_start(){
 	HEAD
 	printf("You are Ira. A cutie!\n\n");
 	printf("You are in your room in Boston, just chilling."
-		"You have your LAPTOP, your PHONE, and a GUITAR."
+		" You have your LAPTOP, your PHONE, and a GUITAR."
 		"\n\nWhat do you want to do?\n\n");
+
+	for(int i = 0; i < SPECIAL_SIZE; i++){
+	  printf("%d",i);
+	  printf("%s\n", p.special_inventory[i].set);
+	}
 
 	while(1){
 		printf("[1]-Open your LAPTOP \t[2]-Check your PHONE \t[3]-Play the GUITAR\n\n");
