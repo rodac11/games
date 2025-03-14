@@ -144,13 +144,11 @@ void p1_start(){
 }
 }
 
-void r_laptop(){
-	HEAD
-	printf("You take out your laptop");
-}
+
 
 void notebook(){
 	HEAD
+	  if(p.inventory[1] != null){}
 	printf("You take out your notebook.");
 }
 
@@ -159,7 +157,10 @@ void pet_cat(){
 	printf("You pet Pantera's head. He purrs.");
 }
 
-
+void r_laptop(){
+	HEAD
+	printf("You take out your laptop");
+}
 //=============================PLAYER 2 stages=================================
 
 void p2_start(){
