@@ -123,7 +123,8 @@ void p1_start(){
 
 	for(int i = 0; i < SPECIAL_SIZE; i++){
 	  printf("%d",i);
-	  printf("%s\n", p.special_inventory[i].set);
+	  printf("%s", p.special_inventory[i].set);
+	  printf(" %d\n", p.special_inventory[i].held);
 	}
 
 	while(1){
@@ -170,7 +171,8 @@ void p2_start(){
 
 	for(int i = 0; i < SPECIAL_SIZE; i++){
 	  printf("%d",i);
-	  printf("%s\n", p.special_inventory[i].set);
+	  printf("%s", p.special_inventory[i].set);
+	  printf(" %d", p.special_inventory[i].held);
 	}
 
 	while(1){
@@ -204,3 +206,7 @@ void guitar(){
 	HEAD
 		printf("You take out your guitar. What do you play?");
 }
+
+
+
+
