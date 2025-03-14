@@ -105,7 +105,12 @@ void player_init(int pnum) {
 
   //loops through special, assigning player-specific set name.
   for(int i = 0; i < SPECIAL_SIZE; i++){
-    strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH); 
+    strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH);
+    p.special_inventory[i].held = false;
+  }
+  //loops through inventory, assigning false to all.
+  for(int i = 0; i < INVENTORY_SIZE; i++){
+    p.inventory[i].held = false;
   }
 }
 
