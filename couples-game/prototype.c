@@ -14,34 +14,38 @@
 
 #define COLLECTIBLE_NAME_LENGTH  20
 #define COLLECTIBLE_SET_NAME 10
-#define COLLECTIBLE_SET_SIZE 3
+#define INVENTORY_SIZE 12
+#define SPECIAL_SIZE 6
 #define PLAYER_NAME_SIZE 3
-#define PLAYER_NAMES "Rod" "Ira"
+#define SPECIAL_NAME_LENGTH 4
+#define INT_LENGTH 4
 
 //========STRUCTS=========
 
 struct collectible {
   char name[COLLECTIBLE_NAME_LENGTH];
   char set[COLLECTIBLE_SET_NAME];
-  bool got;
+  bool held;
 };
-
-//struct collectible collectible_set[COLLECTIBLE_SET_SIZE];
-
 
 struct player {
   int id;
   char name[PLAYER_NAME_SIZE];
-  struct collectible special[COLLECTIBLE_SET_SIZE];
-  struct collectible inventory[COLLECTIBLE_SET_SIZE];
+
+  struct collectible special_inventory[SPECIAL_SIZE];
+  struct collectible inventory[INVENTORY_SIZE];
 };
 
 //========GLOBALS======
 char x;
 char c;
 struct player p;
-const char names[] = {"Rod", "Ira"};
-
+const char *NAMELIST_PLAYERS[] = {"Rod", "Ira"};
+const char *NAMELIST_SPECIAL[] = {"NOTE","SONG"};
+const char *NAMELIST_INVENTORY[][3] = {
+  {"NOTEBOOK","PANTERA","LAPTOP"},
+  {"PHONE","GUITAR","LAPTOP"}
+};
 
 //=========MACROS==========
 #define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
@@ -73,12 +77,12 @@ void player_init(int pnum);
 		printf("Choose your player: \n [1]-Rodrigo\n [2]-Ira\n\n");
 	        PROMPT(c)
 		if(c == '1') {
-		  player_init(1);
+		  player_init(0); // 1 becomes 0 for array's sake
 			p1_start();
 			break;
 		}
 		if(c == '2') {
-		  player_init(2);
+		  player_init(1);// 2 becomes 1 for array's sake
 			p2_start();
 			break;
 		}
@@ -90,19 +94,18 @@ void player_init(int pnum);
 }
 
 void player_init(int pnum) {
+  //assign player id and player name
   p.id = pnum;
-  strcpy(p.name, names[pnum]);
-  
-    // loop through special
-    // give id 1-3
-    // loop through inventory;
-    // give id 1-3
-  }
+  strncpy(p.name, NAMELIST_PLAYERS[pnum], PLAYER_NAME_SIZE);
 
-  if(pnum == 2){
-    strcpy(p.name, "Ira");
-    //loop through special, inventory
-    
+  //helper variables for special loop
+  char id[INT_LENGTH];
+  char special_name[SPECIAL_NAME_LENGTH];
+  strncpy(special_name, NAMELIST_SPECIAL[pnum], SPECIAL_NAME_LENGTH);
+
+  //loops through special, assigning player-specific set name.
+  for(int i = 0; i < SPECIAL_SIZE; i++){
+    strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH); 
   }
 }
 
