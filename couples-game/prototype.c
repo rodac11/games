@@ -43,7 +43,7 @@ struct player p;
 const char *NAMELIST_PLAYERS[] = {"Rod", "Ira"};
 const char *NAMELIST_SPECIAL[] = {"NOTE","SONG"};
 const char *NAMELIST_INVENTORY[][3] = {
-  {"NOTEBOOK","PANTERA","LAPTOP"},
+  {"NOTEBOOK","LAPTOP","PANTERA"},
   {"PHONE","GUITAR","LAPTOP"}
 };
 
@@ -128,18 +128,18 @@ void p1_start(){
 	}
 
 	while(1){
-		printf("[1]-Open your LAPTOP \t[2]-Check your NOTEBOOK \t[3]-Pet PANTERA\n\n");
+		printf("[1]-Check your NOTEBOOK \t[2]-Open your LAPTOP \t[3]-Pet PANTERA\n\n");
 		PROMPT(c)
 			switch(c) {
 			case '1':
-				r_laptop();
-				break;
+			  notebook();
+			  break;
 			case '2':
-				notebook();
-				break;
+			  r_laptop();
+			  break;
 			case '3':
-				pet_cat();
-				break;
+			  pet_cat();
+			  break;
 			}
 }
 }
@@ -148,7 +148,6 @@ void p1_start(){
 
 void notebook(){
 	HEAD
-	  if(p.inventory[1] != null){}
 	printf("You take out your notebook.");
 }
 
@@ -177,18 +176,18 @@ void p2_start(){
 	}
 
 	while(1){
-		printf("[1]-Open your LAPTOP \t[2]-Check your PHONE \t[3]-Play the GUITAR\n\n");
+		printf("[1]-Check your PHONE \t[2]-Play the GUITAR \t[3]-Open your LAPTOP\n\n");
 		PROMPT(c)
 			switch (c){
 			case '1':
-				i_laptop();
-				break;
+			  phone();
+			  break;
 			case '2':
-				phone();
-				break;
+			  guitar();
+			  break;
 			case '3':
-				guitar();
-				break;
+			  i_laptop();
+			  break;
 			}
 	}
 }
