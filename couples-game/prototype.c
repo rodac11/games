@@ -26,6 +26,7 @@ struct collectible {
   char name[COLLECTIBLE_NAME_LENGTH];
   char set[COLLECTIBLE_SET_NAME];
   bool held;
+  bool used;
 };
 
 struct player {
@@ -39,6 +40,7 @@ struct player {
 //========GLOBALS======
 char x;
 char c;
+char *s;
 struct player p;
 const char *NAMELIST_PLAYERS[] = {"Rod", "Ira"};
 const char *NAMELIST_SPECIAL[] = {"NOTE","SONG"};
@@ -49,19 +51,22 @@ const char *NAMELIST_INVENTORY[][3] = {
 
 //=========MACROS==========
 #define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
-#define PROMPT(c) {printf("Your choice: "); scanf(" %c", &c);}
+#define PROMPT(c) {printf("\n\nYour choice: "); scanf(" %c", &c);}
+//TODO add define PROMPTSTRING(s)
 
 //========PROTOTYPES=======
 
 //P1 methods
 
 void p1_start();
+void p1_level1();
 void r_laptop();
 void notebook();
 void pet_cat();
 
 //P2 methods
 void p2_start();
+void p2_level1();
 void i_laptop();
 void phone();
 void guitar();
@@ -107,25 +112,26 @@ void player_init(int pnum) {
   for(int i = 0; i < SPECIAL_SIZE; i++){
     strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH);
     p.special_inventory[i].held = false;
+    p.special_inventory[i].used = false;
   }
   //loops through inventory, assigning false to all.
   for(int i = 0; i < INVENTORY_SIZE; i++){
     p.inventory[i].held = false;
+    p.inventory[i].used = false;
   }
 }
 
 void p1_start(){
 	HEAD
 	  printf("You are %s. A hottie!\n", p.name);
-	printf("You are in your room in Tegucigalpa, just chilling."
-		" You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
-		"\n\nWhat do you want to do?\n\n");
+	printf("You are in your room in Tegucigalpa, just chilling.");
+	sleep(1);
+	p1_level1();
+}
 
-	for(int i = 0; i < SPECIAL_SIZE; i++){
-	  printf("%d",i);
-	  printf("%s", p.special_inventory[i].set);
-	  printf(" %d\n", p.special_inventory[i].held);
-	}
+void p1_level1(){
+printf(" You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
+		"\n\nWhat do you want to do?\n\n");
 
 	while(1){
 		printf("[1]-Check your NOTEBOOK \t[2]-Open your LAPTOP \t[3]-Pet PANTERA\n\n");
@@ -165,18 +171,34 @@ void r_laptop(){
 void p2_start(){
 	HEAD
 	printf("You are Ira. A cutie!\n\n");
-	printf("You are in your room in Boston, just chilling."
-		" You have your LAPTOP, your PHONE, and a GUITAR."
-		"\n\nWhat do you want to do?\n\n");
+	sleep(1);
+	p2_level1();
+}
 
-	for(int i = 0; i < SPECIAL_SIZE; i++){
-	  printf("%d",i);
-	  printf("%s", p.special_inventory[i].set);
-	  printf(" %d", p.special_inventory[i].held);
-	}
+/*
+  Level 1 layout:
+  Ira has a PHONE, GUITAR, and LAPTOP.
+  Her objective is to get herself to leave the room.
+  Super basic logic:
+  Checking her phone will give her SONG 1.
+  Playing SONG 1 will change her mood to HAPPY, unlocking her laptop.
 
+  Using her laptop will give no special use.
+  However, getting the SUPERHINT from P1 will reveal what to do.
+  If Ira accesses her calendar, she'll realize she has a pending appt.
+  
+ */
+
+void p2_level1() {
+  printf("Ira: Oh man, oh jeez... I feel so lazy... ");
+  sleep(1);
+  printf("I don't wanna get up...");
 	while(1){
-		printf("[1]-Check your PHONE \t[2]-Play the GUITAR \t[3]-Open your LAPTOP\n\n");
+	  HEAD
+	  printf("\n\n You are in your room in Boston."
+		 "\nYou have your LAPTOP, your PHONE, and a GUITAR."
+		"\n\nWhat do you want to do?\n\n");
+		printf("[1]-Check your PHONE \t[2]-Play the GUITAR \t[3]-Open your LAPTOP\n");
 		PROMPT(c)
 			switch (c){
 			case '1':
@@ -192,21 +214,72 @@ void p2_start(){
 	}
 }
 
-void i_laptop(){
-	HEAD
-		printf("You open your laptop.");
-}
 
+// P2 INVENTORY 0
 void phone(){
 	HEAD
-		printf("You check your phone.");
+	  if (p.inventory[0].name != NULL){
+	    strncpy(p.inventory[0].name, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
+	  }
+	 printf("This is your phone. It has a clear cover, and a cute drawing of you! \n\nWhat do you want to do?\n"   
+		   "\n[1]-Browse on Instagram [2]-Listen to some music [3]-Check Whatsapp");
+	    PROMPT(c)
+	    switch(c) {
+	    case '1':
+	      printf("\nYou scroll for a while."
+		     "\n.");
+	      sleep(1);
+	      printf(".");
+	      sleep(1);
+	      printf(".");
+	      sleep(1);
+	      printf("\nOkay, time to stop!\n");
+	      sleep(1);
+	      break;
+	      
+	    case '2':
+	      printf("\nYou play your Eurovision soundtrack."
+		     "I'm in loooooove... with a fairy taaaail....."
+		     );
+	      sleep(1);
+	      printf("That was fun!\n");
+	      sleep(1);
+	      if(p.special_inventory[0].name != NULL){
+	      printf("YOU LEARNED A NEW SONG: FAIRYTALE\n");
+	      strncpy(p.inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
+		}
+	      sleep(1);
+	      break;
+	      
+	    case '3':
+	      printf("\nNo new messages. Sad!\n");
+	      sleep(1);
+	      break;
+	    }
+	
 }
 
 void guitar(){
 	HEAD
-		printf("You take out your guitar. What do you play?");
+		printf("\nYou take out your guitar to practice.\n");
+
+	//check if there are known songs
+	// elegant solution: prompt a string.
+	// if string matches a name inside of the held, then accepts.
+	//if not, exit
+	//GIVES HINT FOR P1
+	// 
+	
 }
 
+void i_laptop(){
+	HEAD
+		printf("You open your laptop.");
+	//prompt what to look up
 
+	//idk about how to place it but EVENTUALLY should have
+	// the final prompt for calendar.
+	//CALENDAR unlocks going outside, completing the level.
+}
 
 
