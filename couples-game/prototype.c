@@ -19,6 +19,7 @@
 #define PLAYER_NAME_SIZE 3
 #define SPECIAL_NAME_LENGTH 4
 #define INT_LENGTH 4
+#define PROMPT_STRING_SIZE 20
 
 //========STRUCTS=========
 
@@ -40,7 +41,7 @@ struct player {
 //========GLOBALS======
 char x;
 char c;
-char *s;
+char s[PROMPT_STRING_SIZE];
 struct player p;
 const char *NAMELIST_PLAYERS[] = {"Rod", "Ira"};
 const char *NAMELIST_SPECIAL[] = {"NOTE","SONG"};
@@ -50,9 +51,12 @@ const char *NAMELIST_INVENTORY[][3] = {
 };
 
 //=========MACROS==========
+//clears screen and adds header for game throughout
 #define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
+// prompts single char, mainly for number prompts
 #define PROMPT(c) {printf("\n\nYour choice: "); scanf(" %c", &c);}
-//TODO add define PROMPTSTRING(s)
+// prompts PROMPT_STRING_SIZE string, for items and special items
+#define PROMPTSTRING(s) {printf("\n\nYour choice: "); scanf("%s", &s);}
 
 //========PROTOTYPES=======
 
@@ -79,6 +83,7 @@ void player_init(int pnum);
  int main () {
 	while(c != 1 || c != 2){
 		HEAD
+	
 		printf("Choose your player: \n [1]-Rodrigo\n [2]-Ira\n\n");
 	        PROMPT(c)
 		if(c == '1') {
@@ -154,7 +159,8 @@ printf(" You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED
 
 void notebook(){
 	HEAD
-	printf("You take out your notebook.");
+	printf("You take out your notebook. What to write?");
+	PROMPTSTRING(s)
 }
 
 void pet_cat(){
@@ -164,7 +170,9 @@ void pet_cat(){
 
 void r_laptop(){
 	HEAD
-	printf("You take out your laptop");
+	printf("You take out your laptop to write some code."
+	       "\nWhat to code?");
+	PROMPTSTRING(s)
 }
 //=============================PLAYER 2 stages=================================
 
@@ -261,7 +269,9 @@ void phone(){
 
 void guitar(){
 	HEAD
-		printf("\nYou take out your guitar to practice.\n");
+		printf("\nYou take out your guitar to practice."
+		       "\nWhat do you wanna play?");
+	PROMPTSTRING(s)
 
 	//check if there are known songs
 	// elegant solution: prompt a string.
@@ -274,9 +284,10 @@ void guitar(){
 
 void i_laptop(){
 	HEAD
-		printf("You open your laptop.");
+		printf("You open your laptop to use the internet."
+		       "\nWhat will you look up?");
 	//prompt what to look up
-
+	PROMMPTSTRING(s)
 	//idk about how to place it but EVENTUALLY should have
 	// the final prompt for calendar.
 	//CALENDAR unlocks going outside, completing the level.
