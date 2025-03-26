@@ -56,17 +56,16 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 
 //=========MACROS==========
 //clears screen and adds header for game throughout
-
 #if defined(_WIN64)
 # define CLEAR {system("cls");}
 #else
 # define CLEAR {system("clear");}
 #endif
-
 #define HEAD {CLEAR	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
 
 // prompts single char, mainly for number prompts
 #define PROMPT(c) {printf("\n\nYour choice: "); scanf(" %c", &c);}
+
 // prompts PROMPT_STRING_SIZE string, for items and special items
 #define PROMPTSTRING(s) {printf("\n\nYour choice (write it in ALL-CAPS!): "); scanf("%s", &s);}
 
@@ -75,7 +74,6 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 //========PROTOTYPES=======
 
 //P1 methods
-
 void p1_start();
 void p1_level1();
 void r_laptop();
@@ -197,18 +195,6 @@ void p2_start(){
 	p2_level1();
 }
 
-/*
-  Level 1 layout:
-  Ira has a PHONE, GUITAR, and LAPTOP.
-  Her objective is to get herself to leave the room.
-  Super basic logic:
-  Checking her phone will give her SONG 1.
-  Playing SONG 1 will change her mood to ENERGIZED, unlocking her laptop.
-
-  Using her laptop will give no special use.
-  However, getting the SUPERHINT from P1 will reveal what to do.
-  If Ira accesses her calendar, she'll realize she has a pending appt.
- */
 
 void p2_level1() {
   printf("Ira: Oh man, oh jeez... I feel so lazy... ");
@@ -328,7 +314,7 @@ void guitar(){
 void i_laptop(){
 	HEAD
 	printf("Here's my Macbook. I'm keeping it in a nice pink leather cover!"
-	       "\nSuch good taste...heheh...");
+	       "\nSuch good taste!");
 
 	//Check to see if FAIRYTALE was played
 	if (!p.special_inventory[0].used){
