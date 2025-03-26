@@ -21,6 +21,7 @@
 #define INT_LENGTH 4
 #define PROMPT_STRING_SIZE 20
 
+
 //========STRUCTS=========
 
 struct collectible {
@@ -49,14 +50,27 @@ const char *NAMELIST_INVENTORY[][3] = {
   {"NOTEBOOK","LAPTOP","PANTERA"},
   {"PHONE","GUITAR","LAPTOP"}
 };
+const char *NAMELIST_WEBSITES[] = {"CALENDAR","NETFLIX","YOUTUBE"};
+const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
+
 
 //=========MACROS==========
 //clears screen and adds header for game throughout
-#define HEAD {system("clear"); 	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
+
+#if defined(_WIN64)
+# define CLEAR {system("cls");}
+#else
+# define CLEAR {system("clear");}
+#endif
+
+#define HEAD {CLEAR	printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");}
+
 // prompts single char, mainly for number prompts
 #define PROMPT(c) {printf("\n\nYour choice: "); scanf(" %c", &c);}
 // prompts PROMPT_STRING_SIZE string, for items and special items
-#define PROMPTSTRING(s) {printf("\n\nYour choice: "); scanf("%s", &s);}
+#define PROMPTSTRING(s) {printf("\n\nYour choice (write it in ALL-CAPS!): "); scanf("%s", &s);}
+
+
 
 //========PROTOTYPES=======
 
@@ -135,7 +149,7 @@ void p1_start(){
 }
 
 void p1_level1(){
-printf(" You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
+printf("You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED."
 		"\n\nWhat do you want to do?\n\n");
 
 	while(1){
@@ -189,34 +203,34 @@ void p2_start(){
   Her objective is to get herself to leave the room.
   Super basic logic:
   Checking her phone will give her SONG 1.
-  Playing SONG 1 will change her mood to HAPPY, unlocking her laptop.
+  Playing SONG 1 will change her mood to ENERGIZED, unlocking her laptop.
 
   Using her laptop will give no special use.
   However, getting the SUPERHINT from P1 will reveal what to do.
   If Ira accesses her calendar, she'll realize she has a pending appt.
-  
  */
 
 void p2_level1() {
   printf("Ira: Oh man, oh jeez... I feel so lazy... ");
   sleep(1);
   printf("I don't wanna get up...");
+  sleep(1);
 	while(1){
 	  HEAD
-	  printf("\n\n You are in your room in Boston."
+	  printf("\n\nYou are in your room in Boston."
 		 "\nYou have your LAPTOP, your PHONE, and a GUITAR."
 		"\n\nWhat do you want to do?\n\n");
-		printf("[1]-Check your PHONE \t[2]-Play the GUITAR \t[3]-Open your LAPTOP\n");
+		printf("[1]-Open your Laptop \t[2]-Check your PHONE \t[3]-Play the Guitar\n");
 		PROMPT(c)
 			switch (c){
 			case '1':
-			  phone();
+			  i_laptop();
 			  break;
 			case '2':
-			  guitar();
+			  phone();
 			  break;
 			case '3':
-			  i_laptop();
+			  guitar();
 			  break;
 			}
 	}
@@ -230,7 +244,7 @@ void phone(){
 	    strncpy(p.inventory[0].name, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
 	  }
 	 printf("This is your phone. It has a clear cover, and a cute drawing of you! \n\nWhat do you want to do?\n"   
-		   "\n[1]-Browse on Instagram [2]-Listen to some music [3]-Check Whatsapp");
+		   "\n[1]-Browse on Instagram\t[2]-Check your Whatsapp\n[3]-Listen to some music\t[4]-Put the phone away");
 	    PROMPT(c)
 	    switch(c) {
 	    case '1':
@@ -243,26 +257,34 @@ void phone(){
 	      sleep(1);
 	      printf("\nOkay, time to stop!\n");
 	      sleep(1);
-	      break;
-	      
-	    case '2':
-	      printf("\nYou play your Eurovision soundtrack."
-		     "I'm in loooooove... with a fairy taaaail....."
-		     );
+	      continue;
+
+	      case '2':
+	      printf("\nNew message from RODRIGO:\n");
 	      sleep(1);
-	      printf("That was fun!\n");
+	      printf("\n\tHi love! Hope you're doing okay today!");
+	      sleep(1);
+	      printf("\n\tI'm here to give you a hint or two.");
+		     "\n\tHave you played on your GUITAR lately? You keep telling me it's so great for your mood!"
+		     "\n\tThat's all from me, bye!!!");
+	    sleep(3);
+	      continue;
+	      
+	    case '3':
+	      printf("\nYou play a song from your eurovision playlist."
+		     "\nI'm in loooooove... with a fairy taleeeee....."		     );
+	      sleep(1);
+	      printf("\nThat was fun!\n");
 	      sleep(1);
 	      if(p.special_inventory[0].name != NULL){
 	      printf("YOU LEARNED A NEW SONG: FAIRYTALE\n");
+	      sleep(1);
 	      strncpy(p.inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
 		}
 	      sleep(1);
-	      break;
+	      continue;
 	      
-	    case '3':
-	      printf("\nNo new messages. Sad!\n");
-	      sleep(1);
-	      break;
+	    
 	    }
 	
 }
@@ -271,26 +293,58 @@ void guitar(){
 	HEAD
 		printf("\nYou take out your guitar to practice."
 		       "\nWhat do you wanna play?");
-	PROMPTSTRING(s)
-
-	//check if there are known songs
+	PROMPTSTRING(s)	  
 	// elegant solution: prompt a string.
-	// if string matches a name inside of the held, then accepts.
-	//if not, exit
-	//GIVES HINT FOR P1
-	// 
+	  /* Version one, haven't tested
+	  (I think I was going to do a different version? Maybe with a switch statement? Idk.*/
+	  int tmp = -1;
+	  for(int i = 0; i < SPECIAL_SIZE; i++) {
+	    if((strcmp(s, p.special_inventory[i].name) == 0) && p.special_inventory[i].held == true){
+	      tmp = i;
+	    }
+	  }
+
+	  if(tmp >= 0){
+	  printf("You played %s!", p.special_inventory[tmp].name);
+	  p.special_inventory[tmp].used = true;
+	  }
+	  switch(tmp){
+	  case 0:
+	    printf("I feel so relaxed and optimistic...that was fun!");
+	    sleep(1);
+	    printf("You feel ENERGIZED!");
+	    break;
+	  default:
+	    printf("Eh...what's that song again? I think I forgot!"
+		   "\nHmm...I should go listen to some music...");
+	    sleep(1);
+	    printf("You put away your guitar for now.");
+	    break;
+	  }
+	  sleep(1);
 	
 }
 
 void i_laptop(){
 	HEAD
-		printf("You open your laptop to use the internet."
-		       "\nWhat will you look up?");
+	printf("Here's my Macbook. I'm keeping it in a nice pink leather cover!"
+	       "\nSuch good taste...heheh...");
+
+	//Check to see if FAIRYTALE was played
+	if (!p.special_inventory[0].used){
+	  printf("Man... I don't really feel like it..."
+		 "if only I felt a bit more energized...");
+	}
+	else{
+	  printf("I'm feeling energized enough! Let's see what we can do...");
+	  printf("What are you checking on the internet?");
 	//prompt what to look up
-	PROMMPTSTRING(s)
+	PROMPTSTRING(s)
 	//idk about how to place it but EVENTUALLY should have
 	// the final prompt for calendar.
 	//CALENDAR unlocks going outside, completing the level.
+	  }
+	sleep(1);
 }
 
 
