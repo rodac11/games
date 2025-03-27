@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <stdbool.h>
 
-/* A proof of concept, meant to compile on my terminal and that's it.
+/* A proof of concept, meant to compile on my terminal and that's all.
 
    TODO add functionality for MAC
  */
@@ -83,6 +83,7 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 //P1 methods
 void p1_start();
 void p1_level0();
+void p1_level1();
 void r_laptop();
 void notebook();
 void pet_cat();
@@ -195,10 +196,16 @@ void player_init(int pnum) {
 
 void p1_start(){
   head();
-  printf("You are %s. A hottie!\n", p.name);
+  printf("You are %s. Heyo!\n", p.name);
   printf("You are in your room in Tegucigalpa, just chilling.\n");
-  sleep(1);
+  dsleep(2);
   p1_level0();
+}
+
+void p1_level1(){
+  printf("Thanks for playing babo!!! <333");
+  dsleep(10);
+  exit(0);
 }
 
 void p1_level0(){
@@ -207,6 +214,7 @@ printf("You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED.
 
 	while(1){
 		printf("[1]-Check your NOTEBOOK \t[2]-Open your LAPTOP \n[3]-Pet PANTERA\n\n");
+		if(level_is_completed()==1) printf("\t[4]-Go downstairs");
 		PROMPT(c)
 			switch(c) {
 			case '1':
@@ -218,6 +226,10 @@ printf("You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED.
 			case '3':
 			  pet_cat();
 			  break;
+			case '4':
+			  if(level_is_completed()==1){
+			    p1_level1();
+			  }
 			}
 }
 }
@@ -226,19 +238,46 @@ printf("You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED.
 
 void notebook(){
   head();
-	printf("You take out your notebook. What to write?");
-	PROMPTSTRING(s)
+  //check if cat has been pet.
+  //hacky check, Pantera is "in" the inventory.
+  //oh well. works for now.
+  if(p.inventory[2].held==false){
+    printf("\nYou take out your notebook.");
+    dsleep(2);
+    printf("\nHmm...where did you leave it?");
+    ellipsis();
+    printf("\nYou looked everywhere for it."
+	   "\nYou couldn't find it!");
+    dsleep(2);
+    return;
+  }
+	printf("\nYou take out your notebook. What to do?");
+	printf("\n\n[1]-Check previous notes\t[2]-Write a new note");
+	prompt(c);
+	
+	  //notes provide ideas that work out in the real world.
+	  //on zero level, these will provide some coding ideas.
+	  //
 }
 
-void pet_cat(){
-  head();
-	printf("You pet Pantera's head. He purrs.");
+  void pet_cat(){
+    head();
+  printf("You pet Pantera's head. He purrs.");
+  //add inventory check = true
+  //that way notebook can check.
+  //after that, have normal loop.
 }
 
 void r_laptop(){
   head();
-	printf("You take out your laptop to write some code."
-	       "\nWhat to code?");
+  //check if idea 1 is had.
+  //if not, block.
+
+  //otherwise, allow coding prompt.
+  printf("You take out your laptop."
+	 "\nWhat to code?");
+	//MUSIC IS GOLDEN KEY, given by superhint.
+	//
 	PROMPTSTRING(s)
 }
 //=============================PLAYER 2 stages=================================
@@ -246,21 +285,21 @@ void r_laptop(){
 void p2_start(){
   head();
 	printf("You are Ira. A cutie!\n\n");
-	sleep(1);
+	dsleep(1);
 	p2_level0();
 }
 
 void p2_level1(){
   head();
   printf("Thanks for playing babo!!!!!!!\n");
-  sleep(10);
+  dsleep(10);
   exit(0);
 }
 
 
 void p2_level0() {
   printf("Ira: Oh man, oh jeez... I feel so lazy...\n");
-  sleep(1);
+  dsleep(1);
   printf("I don't wanna get up...\n");
   dsleep(3);
 	while(1){
@@ -308,16 +347,16 @@ void phone(){
 	       printf("\nYou scroll for a while.\n");
 	       ellipsis();
 	       printf("\nOkay, time to stop!\n");
-	       sleep(1);
+	       dsleep(1);
 	       break;
 	       
 	     case '2':
 	       printf("\nNew message from RODRIGO:\n");
-	       sleep(2);
+	       dsleep(2);
 
 	       if(p.special_inventory[0].used == false){
 		 printf("\n\tHi love! Hope you're doing okay today!\n");
-		 sleep(2);
+		 dsleep(2);
 		 printf("\n\tI'm here to give you a hint or two."
 			"\n\tHave you played on your GUITAR lately?"
 			"\n\tYou keep telling me it's so great for your mood!");
@@ -343,7 +382,7 @@ void phone(){
 		 printf("\n\tThanks a lot, baby! Byeee <333");
 		 dsleep(5);
 	       }
-	       sleep(4);
+	       dsleep(4);
 	       break;
 	       
 	     case '3':
@@ -355,11 +394,11 @@ void phone(){
 	       dsleep(2);
 	       if(strncmp(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH)!=0){
 		 printf("I love that song, fairytale...\n");
-		 sleep(2);
+		 dsleep(2);
 		 strncpy(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
 		 p.special_inventory[0].held = true;	       
 	       }
-	       sleep(1);
+	       dsleep(1);
 	       break;
 	       
 	     case '4':
@@ -407,10 +446,10 @@ void guitar(){
 void i_laptop() {
   head();
 	  printf("\nHere's my Macbook. I'm keeping it in a nice pink leather cover!");
-	sleep(0.5);
+	dsleep(0.5);
 	printf("\nSuch good taste!");
 
-	sleep(3);
+	dsleep(3);
 	//Check to see if FAIRYTALE was played
 	if (!p.special_inventory[0].used){
 	  printf("\nBut...");
@@ -441,7 +480,7 @@ void i_laptop() {
 	    printf("\nYou open up the calendar app that Rodrigo programmed for you.");
 	    ellipsis();
 	    printf("\n\nOh! I have an interview today!");
-	    sleep(1);
+	    dsleep(1);
 	    printf("\nI completely forgot! I better get ready...");
 	    dsleep(3);
 	    complete_level();
@@ -469,5 +508,5 @@ void i_laptop() {
 	    break;
 	  }
 	  }
-	sleep(1);
+	dsleep(1);
 }
