@@ -44,7 +44,7 @@ struct player {
 //========GLOBALS======
 char x;
 char c;
-char s[PROMPT_STRING_SIZE];
+char *s;
 int currentlevel;
 struct player p;
 const char *NAMELIST_PLAYERS[] = {"Rod", "Ira"};
@@ -71,10 +71,6 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 # define SLEEPTIME 1
 #endif
 
-// prompts single char, mainly for number prompts
-
-// prompts PROMPT_STRING_SIZE string, for items and special items
-#define PROMPTSTRING(s) {printf("\n\nYour choice (write it in ALL-CAPS!): "); scanf_s("%s", &s);}
 
 
 //========PROTOTYPES=======
@@ -104,7 +100,7 @@ void dsleep(int i);
 void ellipsis();
 
 //imported methods(?)
-errno_t strncpy_s();
+
 //======METHODS=======
 
 void complete_level(){
@@ -141,15 +137,32 @@ void prompt(char *x){
   printf("\n\nYour choice: ");
   x = fgets(x, 2, stdin);
   printf(" yo yo yo: %c", c);
+  dsleep(1);
 }
 
-void promptstring(char (*p)[20]){
+void promptstring(char (*x)){
   // printf();
+  
     printf("\n\nYour choice (WRITE IT IN ALL CAPS!): ");
-    scanf_s("%s", p);
+    if (fgets(x, PROMPT_STRING_SIZE, stdin) == NULL){
+      *x = '\0';
+      printf("fatal failure!");
+      exit(1);
+    }
+    else
+      {
+	char *tmp;
+	if ((tmp = strchr(x, '\n')) != NULL) {
+	  *tmp = '\0';
+	}
+
+      }
+    return;
 }
 
  int main () {
+
+   s = (char*) malloc((PROMPT_STRING_SIZE));
 	while(c != 1 || c != 2){
 	  head();
 	
@@ -175,16 +188,16 @@ void promptstring(char (*p)[20]){
 void player_init(int pnum) {
   //assign player id and player name
   p.id = pnum;
-  strncpy_s(p.name, PLAYER_NAME_SIZE, NAMELIST_PLAYERS[pnum], PLAYER_NAME_SIZE);
+  strncpy(p.name, NAMELIST_PLAYERS[pnum], PLAYER_NAME_SIZE);
 
   //helper variables for special loop
   char id[INT_LENGTH];
   char special_name[SPECIAL_NAME_LENGTH];
-  strncpy_s(special_name, SPECIAL_NAME_LENGTH, NAMELIST_SPECIAL[pnum], SPECIAL_NAME_LENGTH);
+  strncpy(special_name, NAMELIST_SPECIAL[pnum], SPECIAL_NAME_LENGTH);
 
   //loops through special, assigning player-specific set name.
   for(int i = 0; i < SPECIAL_SIZE; i++){
-    strncpy_s(p.special_inventory[i].set, SPECIAL_NAME_LENGTH, special_name, SPECIAL_NAME_LENGTH);
+    strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH);
     p.special_inventory[i].held = false;
     p.special_inventory[i].used = false;
   }
@@ -206,6 +219,7 @@ void p1_start(){
 void p1_level1(){
   printf("Thanks for playing babo!!! <333");
   dsleep(10);
+  free(s);
   exit(0);
 }
 
@@ -279,7 +293,7 @@ void r_laptop(){
 	 "\nWhat to code?");
 	//MUSIC IS GOLDEN KEY, given by superhint.
 	//
-	PROMPTSTRING(s)
+  promptstring(s);
 }
 //=============================PLAYER 2 stages=================================
 
@@ -294,6 +308,7 @@ void p2_level1(){
   head();
   printf("Thanks for playing babo!!!!!!!\n");
   dsleep(10);
+  free(s);
   exit(0);
 }
 
@@ -335,7 +350,7 @@ void p2_level0() {
 
 void phone(){
 	  if (!p.inventory[0].used){
-	    strncpy_s(p.inventory[0].name, COLLECTIBLE_NAME_LENGTH, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
+	    strncpy(p.inventory[0].name, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
 	    p.inventory[0].used = true;
 	  }
 	 while(1){
@@ -397,7 +412,7 @@ void phone(){
 	       if(strncmp(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH)!=0){
 		 printf("I love that song, fairytale...\n");
 		 dsleep(2);
-		 strncpy_s(p.special_inventory[0].name, COLLECTIBLE_NAME_LENGTH, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
+		 strncpy(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
 		 p.special_inventory[0].held = true;	       
 	       }
 	       dsleep(1);
@@ -416,7 +431,7 @@ void guitar(){
   head();
   printf("\nYou take out your guitar to practice."
 		       "\nWhat do you wanna play?");
-  promptstring(&s);	  
+  promptstring(s);	  
   int tmp = -1;
 	  for(int i = 0; i < SPECIAL_SIZE; i++) {
 	    if((strcmp(s, p.special_inventory[i].name) == 0) && p.special_inventory[i].held == true){
@@ -464,7 +479,7 @@ void i_laptop() {
 	  printf("\nI'm feeling energized enough! Let's see what we can do...");
 	  printf("\nWhat website will you visit?");
 	//prompt what to look up
-	PROMPTSTRING(s)
+	  promptstring(s);
 	  
 	  //compare given string with NAMELIST_WEBSITES
 	  //store matching index on tmp
