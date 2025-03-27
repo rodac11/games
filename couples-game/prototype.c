@@ -262,15 +262,15 @@ void p2_level0() {
   printf("Ira: Oh man, oh jeez... I feel so lazy...\n");
   sleep(1);
   printf("I don't wanna get up...\n");
-  sleep(1);
+  dsleep(3);
 	while(1){
 	  currentlevel = 0;
 	  head();
 	  printf("\n\nYou are in your room in Boston."
 		 "\nYou have your LAPTOP, your PHONE, and a GUITAR.");
 	  printf("\n\nWhat do you want to do?\n\n");
-	  printf("[1]-Open your Laptop \t[2]-Check your PHONE \t[3]-Play the Guitar");
-	  if(level_is_completed() == 1){printf("\t[4]-Go downstairs");
+	  printf("[1]-Open your Laptop \t[2]-Check your PHONE \n[3]-Play the Guitar");
+	  if(level_is_completed() == 1){printf("\t[4]-Go downstairs");}
 		PROMPT(c)
 			switch (c){
 			case '1':
@@ -283,7 +283,7 @@ void p2_level0() {
 			  guitar();
 			  break;
 			case '4':
-			  if(level_is_completed){
+			  if(level_is_completed()){
 			    p2_level1();
 			  }
 			  break;
@@ -293,57 +293,82 @@ void p2_level0() {
 
 
 
-// P2 INVENTORY 0
 void phone(){
-  head();
 	  if (p.inventory[0].name != NULL){
 	    strncpy(p.inventory[0].name, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
 	  }
-	 printf("This is your phone. It has a clear cover, and a cute drawing of you0\n!");
 	 while(1){
+	   head();
+	   printf("\nThis is your phone. It has a clear cover, and a cute drawing of you!\n");
 	   printf("\n\nWhat do you want to do?\n" 
-		  "\n[1]-Browse on Instagram\t[2]-Check your Whatsapp\n[3]-Listen to some music\t[4]-Put the phone away\n");
+		  "\n[1]-Browse on Instagram \t[2]-Check your Whatsapp\n[3]-Listen to some music \t[4]-Put the phone away\n");
 	   PROMPT(c)
-	    switch(c) {
-	    case '1':
-	      printf("\nYou scroll for a while.\n");
-	      ellipsis();
-		printf("\nOkay, time to stop!\n");
-	      sleep(1);
-	      break;
+	     switch(c) {
+	     case '1':
+	       printf("\nYou scroll for a while.\n");
+	       ellipsis();
+	       printf("\nOkay, time to stop!\n");
+	       sleep(1);
+	       break;
+	       
+	     case '2':
+	       printf("\nNew message from RODRIGO:\n");
+	       sleep(2);
 
-	    case '2':
-	      printf("\nNew message from RODRIGO:\n");
-	      sleep(1);
-	      printf("\n\tHi love! Hope you're doing okay today!\n");
-	      sleep(1);
-	      printf("\n\tI'm here to give you a hint or two."
-		     "\n\tHave you played on your GUITAR lately? You keep telling me it's so great for your mood!"
-		     "\n\tThat's all from me, bye!!!");
-	      sleep(3);
-	      break;
+	       if(p.special_inventory[0].used == false){
+		 printf("\n\tHi love! Hope you're doing okay today!\n");
+		 sleep(2);
+		 printf("\n\tI'm here to give you a hint or two."
+			"\n\tHave you played on your GUITAR lately?"
+			"\n\tYou keep telling me it's so great for your mood!");
+		 dsleep(3);
+		 printf("\n\tLet me know if you end up playing something!");
+		 dsleep(3);
+		 printf("\n\tThat's all from me, bye!!!");
+	       }
+	       else {
+		 printf("\n\tHi love! What's up?");
+		 ellipsis();
+		 printf("\n\tOh, cool! You played a song on your guitar!");
+		 dsleep(2);
+		 printf("\n\tYou must feel really relaxed now!");
+		 dsleep(1);
+		 
+		 printf("\n\tI think I'll do a similar thing...");
+		 dsleep(2);
+		 printf("\n\tYou gave me a cool idea!");
+		 dsleep(2);
+		 printf("\n\tI'll try programming a MUSIC application...");
+		 dsleep(2);
+		 printf("\n\tThanks a lot, baby! Byeee <333");
+		 dsleep(5);
+	       }
+	       sleep(4);
+	       break;
+	       
+	     case '3':
+	       printf("\nYou play a song from your eurovision playlist."
+		      "\nI'm in loooooove... with a fairy taleeeee....."		     );
+	       ellipsis();
+	       dsleep(2);
+	       printf("\n\nThat was fun!\n");
+	       dsleep(2);
+	       if(strncmp(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH)!=0){
+		 printf("I love that song, fairytale...\n");
+		 sleep(2);
+		 strncpy(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
+		 p.special_inventory[0].held = true;	       
+	       }
+	       sleep(1);
+	       break;
+	       
+	     case '4':
+	       printf("\n You put your phone down.");
+	       dsleep(3);
+	       return;
+	     }
+	 }
 	 
-	    case '3':
-	      printf("\nYou play a song from your eurovision playlist."
-		     "\nI'm in loooooove... with a fairy taleeeee....."		     );
-	      sleep(1);
-	      printf("\n\nThat was fun!\n");
-	      sleep(1);
-	      if(strncmp(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH)){
-		printf("I love that song, fairytale...\n");
-		sleep(1);
-		strncpy(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
-		p.special_inventory[0].held = true;	       
-	      }
-	      sleep(1);
-	      break;
-
-	    case '4':
-	      printf("\n You put your phone down.");
-	      return;
-	    }
-	    }
-	
 }
 
 void guitar(){
@@ -351,50 +376,52 @@ void guitar(){
   printf("\nYou take out your guitar to practice."
 		       "\nWhat do you wanna play?");
   promptstring(&s);	  
-	  int tmp = -1;
+  int tmp = -1;
 	  for(int i = 0; i < SPECIAL_SIZE; i++) {
-	    printf("held: %d\n", p.special_inventory[i].held);
 	    if((strcmp(s, p.special_inventory[i].name) == 0) && p.special_inventory[i].held == true){
 	      tmp = i;
 	    }
 	  }
-
-	  if(tmp >= 0){
-	  printf("You played %s!", p.special_inventory[tmp].name);
-	  p.special_inventory[tmp].used = true;
+	  
+	  if(tmp >= 0) {
+	    printf("\nYou played %s!", p.special_inventory[tmp].name);
+	    p.special_inventory[tmp].used = true;
 	  }
 	  switch(tmp){
 	  case 0:
-	    printf("I feel so relaxed and optimistic...that was fun!");
-	    sleep(1);
-	    printf("You feel ENERGIZED!");
+	    printf("\nI feel so relaxed and optimistic...that was fun!");
+	    dsleep(2);
+	    printf("\n\nYou feel ENERGIZED!");
 	    break;
 	  default:
-	    printf("Eh...what's that song again? I think I forgot!"
+	    printf("\nEh...what's that song again? I think I forgot!"
 		   "\nHmm...I should go listen to some music...");
-	    sleep(1);
-	    printf("You put away your guitar for now.");
+	    dsleep(2);
+	    printf("\nYou put away your guitar for now.");
 	    break;
 	  }
-	  sleep(1);
+	  dsleep(2);
 	
 }
 
-void i_laptop(){
+void i_laptop() {
   head();
-	  printf("Here's my Macbook. I'm keeping it in a nice pink leather cover!");
+	  printf("\nHere's my Macbook. I'm keeping it in a nice pink leather cover!");
 	sleep(0.5);
 	printf("\nSuch good taste!");
 
-	sleep(1);
+	sleep(3);
 	//Check to see if FAIRYTALE was played
 	if (!p.special_inventory[0].used){
-	  printf("Man... I don't really feel like it..."
+	  printf("\nBut...");
+	  dsleep(3);
+	  printf("I don't really feel like it...\n"
 		 "if only I felt a bit more energized...");
+	  dsleep(3);
 	}
 	else{
-	  printf("I'm feeling energized enough! Let's see what we can do...");
-	  printf("What website will you visit?");
+	  printf("\nI'm feeling energized enough! Let's see what we can do...");
+	  printf("\nWhat website will you visit?");
 	//prompt what to look up
 	PROMPTSTRING(s)
 	  
@@ -411,15 +438,35 @@ void i_laptop(){
 	  switch(tmp){
 	    //if calendar, unlocks win exit
 	  case 0:
-	    printf("You open up the calendar app that Rodrigo programmed for you.");
+	    printf("\nYou open up the calendar app that Rodrigo programmed for you.");
 	    ellipsis();
-	    printf("Oh! I have an interview today!");
+	    printf("\n\nOh! I have an interview today!");
 	    sleep(1);
-	    printf("I completely forgot! I better get ready...");
+	    printf("\nI completely forgot! I better get ready...");
+	    dsleep(3);
 	    complete_level();
+	    break;
 	    //if netflix, dialogue
+	  case 1:
+	    printf("\nHmm... could watch a K-drama...");
+	    ellipsis();
+	    printf("\nHmm... I don't know...");
+	    ellipsis();
+	    printf("\nI can't decide what to watch!");
+	    dsleep(2);
+	    break;
 	  //if youtube, dialogue
+	  case 2:
+	    printf("\nI could watch something on YouTube!");
+	    ellipsis();
+	    printf("\nBut...maybe later!");
+	    dsleep(2);
+	    break;
 	  //default, random dialogue
+	  default:
+	    printf("\nNo time for that right now!");
+	    dsleep(2);
+	    break;
 	  }
 	  }
 	sleep(1);
