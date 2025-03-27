@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <windows.h>
 #include <stdbool.h>
-
+#include <windows.h>
+#include <unistd.h>
 /* A proof of concept, meant to compile on my terminal and that's all.
 
    TODO add functionality for MAC
@@ -62,11 +61,12 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 //clears screen and adds header for game throughout
 #if defined(_WIN64)
 # define CLEAR "cls"
-
-//keeping sleeptime as different just in case
-//apparently windows sleep is in ms?
+#include <windows.h>
+# //keeping sleeptime as different just in case
+# //apparently windows sleep is in ms?
 # define SLEEPTIME 1
 #else
+
 # define CLEAR "clear"
 # define SLEEPTIME 1
 #endif
@@ -74,8 +74,7 @@ const char *NAMELIST_PROGRAMS[] = {"ALARM", "CALENDAR","TIMER"};
 // prompts single char, mainly for number prompts
 
 // prompts PROMPT_STRING_SIZE string, for items and special items
-#define PROMPTSTRING(s) {printf("\n\nYour choice (write it in ALL-CAPS!): "); scanf("%s", &s);}
-#define PROMPT(c) {printf("\n\nYour choice: "); scanf(" %c", &c);}
+#define PROMPTSTRING(s) {printf("\n\nYour choice (write it in ALL-CAPS!): "); scanf_s("%s", &s);}
 
 
 //========PROTOTYPES=======
@@ -101,9 +100,11 @@ void player_init(int pnum);
 void level_complete();
 
 // helper methods
-void dsleep();
+void dsleep(int i);
 void ellipsis();
 
+//imported methods(?)
+errno_t strncpy_s();
 //======METHODS=======
 
 void complete_level(){
@@ -132,19 +133,20 @@ void head(){
   printf("\n ~~~RODRIGO AND IRA'S ADVENTURE~~~  \n\n");
 }
 
-void prompt(char *p){
+void prompt(char *x){
   //I think this works?
   //You give a pointer to global c char, and here it scans a value into that pointer
   //thus changing the value of c.
   //(right?)
   printf("\n\nYour choice: ");
-  scanf(" %c", p);
+  x = fgets(x, 2, stdin);
+  printf(" yo yo yo: %c", c);
 }
 
 void promptstring(char (*p)[20]){
   // printf();
     printf("\n\nYour choice (WRITE IT IN ALL CAPS!): ");
-    scanf("%s", p);
+    scanf_s("%s", p);
 }
 
  int main () {
@@ -152,8 +154,7 @@ void promptstring(char (*p)[20]){
 	  head();
 	
 		printf("Choose your player: \n [1]-Rodrigo\n [2]-Ira\n\n");
-	        //PROMPT(c)
-		prompt(&c);
+	        prompt(&c);
 		if(c == '1') {
 		  player_init(0); // 1 becomes 0 for array's sake
 			p1_start();
@@ -166,7 +167,7 @@ void promptstring(char (*p)[20]){
 		}
 		else {
 			printf("\nYou have to choose 1 or 2.\n");
-			sleep(1);
+			dsleep(1);
 		}
 	}
 }
@@ -174,16 +175,16 @@ void promptstring(char (*p)[20]){
 void player_init(int pnum) {
   //assign player id and player name
   p.id = pnum;
-  strncpy(p.name, NAMELIST_PLAYERS[pnum], PLAYER_NAME_SIZE);
+  strncpy_s(p.name, PLAYER_NAME_SIZE, NAMELIST_PLAYERS[pnum], PLAYER_NAME_SIZE);
 
   //helper variables for special loop
   char id[INT_LENGTH];
   char special_name[SPECIAL_NAME_LENGTH];
-  strncpy(special_name, NAMELIST_SPECIAL[pnum], SPECIAL_NAME_LENGTH);
+  strncpy_s(special_name, SPECIAL_NAME_LENGTH, NAMELIST_SPECIAL[pnum], SPECIAL_NAME_LENGTH);
 
   //loops through special, assigning player-specific set name.
   for(int i = 0; i < SPECIAL_SIZE; i++){
-    strncpy(p.special_inventory[i].set, special_name, SPECIAL_NAME_LENGTH);
+    strncpy_s(p.special_inventory[i].set, SPECIAL_NAME_LENGTH, special_name, SPECIAL_NAME_LENGTH);
     p.special_inventory[i].held = false;
     p.special_inventory[i].used = false;
   }
@@ -215,7 +216,7 @@ printf("You have your NOTEBOOK and your LAPTOP. PANTERA is sleeping on your BED.
 	while(1){
 		printf("[1]-Check your NOTEBOOK \t[2]-Open your LAPTOP \n[3]-Pet PANTERA\n\n");
 		if(level_is_completed()==1) printf("\t[4]-Go downstairs");
-		PROMPT(c)
+		prompt(&c);
 			switch(c) {
 			case '1':
 			  notebook();
@@ -253,7 +254,7 @@ void notebook(){
   }
 	printf("\nYou take out your notebook. What to do?");
 	printf("\n\n[1]-Check previous notes\t[2]-Write a new note");
-	prompt(c);
+	prompt(&c);
 	
 	  //notes provide ideas that work out in the real world.
 	  //on zero level, these will provide some coding ideas.
@@ -310,7 +311,7 @@ void p2_level0() {
 	  printf("\n\nWhat do you want to do?\n\n");
 	  printf("[1]-Open your Laptop \t[2]-Check your PHONE \n[3]-Play the Guitar");
 	  if(level_is_completed() == 1){printf("\t[4]-Go downstairs");}
-		PROMPT(c)
+	  prompt(&c);
 			switch (c){
 			case '1':
 			  i_laptop();
@@ -333,15 +334,16 @@ void p2_level0() {
 
 
 void phone(){
-	  if (p.inventory[0].name != NULL){
-	    strncpy(p.inventory[0].name, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
+	  if (!p.inventory[0].used){
+	    strncpy_s(p.inventory[0].name, COLLECTIBLE_NAME_LENGTH, NAMELIST_INVENTORY[1][0], COLLECTIBLE_NAME_LENGTH);
+	    p.inventory[0].used = true;
 	  }
 	 while(1){
 	   head();
 	   printf("\nThis is your phone. It has a clear cover, and a cute drawing of you!\n");
 	   printf("\n\nWhat do you want to do?\n" 
 		  "\n[1]-Browse on Instagram \t[2]-Check your Whatsapp\n[3]-Listen to some music \t[4]-Put the phone away\n");
-	   PROMPT(c)
+	   prompt(&c);
 	     switch(c) {
 	     case '1':
 	       printf("\nYou scroll for a while.\n");
@@ -395,7 +397,7 @@ void phone(){
 	       if(strncmp(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH)!=0){
 		 printf("I love that song, fairytale...\n");
 		 dsleep(2);
-		 strncpy(p.special_inventory[0].name, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
+		 strncpy_s(p.special_inventory[0].name, COLLECTIBLE_NAME_LENGTH, "FAIRYTALE", COLLECTIBLE_NAME_LENGTH);
 		 p.special_inventory[0].held = true;	       
 	       }
 	       dsleep(1);
@@ -446,7 +448,7 @@ void guitar(){
 void i_laptop() {
   head();
 	  printf("\nHere's my Macbook. I'm keeping it in a nice pink leather cover!");
-	dsleep(0.5);
+	dsleep(1);
 	printf("\nSuch good taste!");
 
 	dsleep(3);
