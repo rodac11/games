@@ -139,9 +139,16 @@ void prompt(char *x){
 }
 
 void promptstring(char (*x)[20]){
+	s[0] = '\0';
 	printf("\n\nYour choice (WRITE IT IN ALL CAPS!): ");
-
-	scanf("%s", x);
+	char buff[100];
+	//scanf("%s", x);
+	fgets(buff, 20, stdin);
+	printf("\n\nYou entered: %s", buff);
+	strncpy(s, buff, 20);
+	printf("\n\nS: %s", s);
+	dsleep(10);
+	
 	return;
 }
 
